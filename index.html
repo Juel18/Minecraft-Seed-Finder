@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Minecraft Seed Finder — Rare & Best Seeds</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <meta name="description" content="Filter and discover rare, high-quality Minecraft world seeds by version, edition, biomes, structures, and playstyle."/>
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <h1>🌱 Minecraft Seed Finder</h1>
+    <p>Find rare & best seeds that match your requirements — version, edition, biomes, structures & more.</p>
+  </div>
+</header>
+
+<main class="container grid">
+  <aside class="filters-card card">
+    <h2>Filters</h2>
+
+    <div class="field">
+      <label for="edition">Edition</label>
+      <select id="edition" multiple>
+        <option>Java</option>
+        <option>Bedrock</option>
+      </select>
+      <small>Tip: Ctrl/Cmd + click for multi-select.</small>
+    </div>
+
+    <div class="field">
+      <label for="version">Game Version</label>
+      <select id="version" multiple>
+        <option>1.21</option>
+        <option>1.20</option>
+        <option>1.19</option>
+        <option>1.18</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="biomes">Required Spawn Biomes (AND)</label>
+      <select id="biomes" multiple>
+        <option>Plains</option>
+        <option>Cherry Grove</option>
+        <option>Meadow</option>
+        <option>Taiga</option>
+        <option>Savanna</option>
+        <option>Desert</option>
+        <option>Snowy Plains</option>
+        <option>Jungle</option>
+        <option>Dark Forest</option>
+        <option>Mangrove Swamp</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Structures (max distance from spawn)</label>
+      <div class="structure-row">
+        <label>Village ≤ <input id="maxVillage" type="number" min="0" step="50" value="800"> blocks</label>
+      </div>
+      <div class="structure-row">
+        <label>Stronghold ≤ <input id="maxStronghold" type="number" min="0" step="100" value="1600"> blocks</label>
+      </div>
+      <div class="structure-row">
+        <label>Ancient City ≤ <input id="maxAncientCity" type="number" min="0" step="100" value="2500"> blocks</label>
+      </div>
+      <div class="structure-row">
+        <label>Ocean Monument ≤ <input id="maxMonument" type="number" min="0" step="100" value="2500"> blocks</label>
+      </div>
+      <div class="structure-row">
+        <label>Trial Chambers ≤ <input id="maxTrials" type="number" min="0" step="100" value="2500"> blocks</label>
+      </div>
+      <div class="structure-row">
+        <label>Woodland Mansion ≤ <input id="maxMansion" type="number" min="0" step="100" value="6000"> blocks</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="tags">Playstyle Tags</label>
+      <div class="tags-grid" id="tags">
+        <label><input type="checkbox" value="Speedrun"/> Speedrun</label>
+        <label><input type="checkbox" value="Hardcore"/> Hardcore</label>
+        <label><input type="checkbox" value="Builder"/> Builder</label>
+        <label><input type="checkbox" value="Explorer"/> Explorer</label>
+        <label><input type="checkbox" value="Challenge"/> Challenge</label>
+        <label><input type="checkbox" value="Rare"/> Rare</label>
+        <label><input type="checkbox" value="Scenic"/> Scenic</label>
+      </div>
+    </div>
+
+    <details class="card soft" id="weights">
+      <summary>Scoring Weights (optional)</summary>
+      <div class="field">
+        <label>Rarity weight: <span class="out" id="wRarityOut">0.6</span></label>
+        <input id="wRarity" type="range" min="0" max="1" value="0.6" step="0.05"/>
+      </div>
+      <div class="field">
+        <label>Structure proximity weight: <span class="out" id="wStructOut">0.3</span></label>
+        <input id="wStruct" type="range" min="0" max="1" value="0.3" step="0.05"/>
+      </div>
+      <div class="field">
+        <label>Biome match weight: <span class="out" id="wBiomeOut">0.1</span></label>
+        <input id="wBiome" type="range" min="0" max="1" value="0.1" step="0.05"/>
+      </div>
+    </details>
+
+    <div class="buttons">
+      <button id="applyBtn" class="btn primary">Apply Filters</button>
+      <button id="resetBtn" class="btn">Reset</button>
+    </div>
+
+    <details class="card soft">
+      <summary>Quick Presets</summary>
+      <div class="preset-row">
+        <button class="btn tiny" data-preset="speedrun">Speedrun</button>
+        <button class="btn tiny" data-preset="hardcore">Hardcore</button>
+        <button class="btn tiny" data-preset="builder">Builder</button>
+        <button class="btn tiny" data-preset="scenic">Scenic</button>
+      </div>
+    </details>
+
+    <details class="card soft">
+      <summary>Add Custom Seed</summary>
+      <form id="customSeedForm">
+        <div class="field">
+          <label>Seed (number or string)</label>
+          <input name="seed" required placeholder="e.g., 8675309 or 'mycoolseed'"/>
+        </div>
+        <div class="field two">
+          <div>
+            <label>Edition</label>
+            <select name="edition" required>
+              <option>Java</option>
+              <option>Bedrock</option>
+            </select>
+          </div>
+          <div>
+            <label>Version</label>
+            <input name="version" required placeholder="e.g., 1.21"/>
+          </div>
+        </div>
+        <div class="field">
+          <label>Spawn Biomes (comma separated)</label>
+          <input name="biomes" placeholder="Plains, Meadow"/>
+        </div>
+        <div class="field">
+          <label>Tags (comma separated)</label>
+          <input name="tags" placeholder="Rare, Scenic"/>
+        </div>
+        <div class="field">
+          <label>Description</label>
+          <textarea name="description" rows="3" placeholder="What makes this seed special?"></textarea>
+        </div>
+        <div class="field">
+          <label>Feature distances from spawn (JSON)</label>
+          <textarea name="features" rows="6" placeholder='{
+  "village":[{"distance":240,"x":120,"z":-200}],
+  "stronghold":[{"distance":1300,"x":-1200,"z":350}]
+}'></textarea>
+          <small>Provide any subset of: village, stronghold, ancient_city, ocean_monument, trial_chambers, mansion, mushroom_island.</small>
+        </div>
+        <button class="btn primary">Add Seed</button>
+      </form>
+    </details>
+
+    <details class="card soft">
+      <summary>Data: Import / Export</summary>
+      <div class="field">
+        <button id="exportBtn" class="btn">Export all seeds (JSON)</button>
+      </div>
+      <div class="field">
+        <label>Import JSON</label>
+        <input type="file" id="importFile" accept="application/json"/>
+      </div>
+    </details>
+
+  </aside>
+
+  <section class="results">
+    <div class="toolbar card">
+      <div class="field">
+        <label for="sortBy">Sort by</label>
+        <select id="sortBy">
+          <option value="score">Best score</option>
+          <option value="rarity">Rarity</option>
+          <option value="stronghold">Closest stronghold</option>
+          <option value="village">Closest village</option>
+        </select>
+      </div>
+      <div class="spacer"></div>
+      <div class="field">
+        <label>Results per page</label>
+        <select id="perPage">
+          <option>6</option>
+          <option>12</option>
+          <option selected>24</option>
+          <option>48</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="results" class="card results-grid">
+      <!-- Results injected here -->
+    </div>
+
+    <div id="pager" class="pager"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>Made for Minecraft fans. Offline-friendly. Add your own seeds and share JSON with friends.</p>
+    <p class="muted">Note: Structure distances and rarity are sample data unless you import authoritative datasets.</p>
+  </div>
+</footer>
+
+<script src="app.js" defer></script>
+</body>
+</html>
